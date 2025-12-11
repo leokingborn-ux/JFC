@@ -1,0 +1,51 @@
+name: Build Linux (Ubuntu 22.04)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: {}
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            python3 build-essential fakeroot rpm \
+            libx11-dev libxrandr-dev libxinerama-dev libxi-dev libxxf86vm-dev \
+            libgtk-3-dev libnss3 libasound2 squashfs-tools cpio
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Prepare electron native dependencies
+        run: npx electron-builder install-app-deps
+
+      - name: Build Linux packages (AppImage + deb)
+        run: npm run build:linux
+        env:
+          CI: true
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Linux artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: artemis-linux-ubuntu-22.04
+          path: |
+            release-build/*.AppImage
+            release-build/*.deb
+          if-no-files-found: ignore
+
+      - name: List build outputs
+        run: ls -lah release-build/
