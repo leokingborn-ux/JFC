@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -p tsconfig.electron.json && vite build && electron-builder",
-    "build:linux": "cross-env TARGET=linux tsc -p tsconfig.electron.json && vite build && electron-builder --linux",
+    "build:linux": "cross-env TARGET=linux tsc -p tsconfig.electron.json && vite build && electron-builder --linux deb",
     "start:coordinator": "node ./tools/coordinator.js",
     "start:worker": "node ./tools/remote-worker.js",
     "build:unique": "node scripts/build-unique.js"
