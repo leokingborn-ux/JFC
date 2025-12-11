@@ -8,8 +8,8 @@
   "homepage": "https://example.local/",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && tsc -p tsconfig.electron.json && vite build && electron-builder",
-    "build:linux": "cross-env TARGET=linux tsc && tsc -p tsconfig.electron.json && vite build && electron-builder --linux",
+    "build": "tsc -p tsconfig.electron.json && vite build && electron-builder",
+    "build:linux": "cross-env TARGET=linux tsc -p tsconfig.electron.json && vite build && electron-builder --linux",
     "start:coordinator": "node ./tools/coordinator.js",
     "start:worker": "node ./tools/remote-worker.js",
     "build:unique": "node scripts/build-unique.js"
