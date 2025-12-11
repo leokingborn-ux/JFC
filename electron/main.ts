@@ -112,7 +112,7 @@ if (process.env.SIMULATE_RUN === '1') {
 ipcMain.on('START_MINING', (event, config) => {
   if (miningWorkers.length > 0) return; 
 
-  console.log(`[MAIN] Initializing ${MINING_THREADS} Native Kernels...`);
+  console.log(`[MAIN] Initializing ${currentMiningThreads} Native Kernels...`);
   
   // Resolve kernel path: prefer built `dist-electron/miner-kernel.js`, fallback to source `electron/miner-kernel.js`
   // Typical locations:
