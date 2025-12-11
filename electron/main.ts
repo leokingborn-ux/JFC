@@ -313,17 +313,17 @@ ipcMain.handle('GET_OPTIMIZATION_SUGGESTION', async () => {
     const cores = AVAILABLE_CORES;
 
     // Basic heuristic:
-    // - Balanced: cores - 1 (reserve one for OS/UI)
-    // - Performance: cores (use all available)
+    // - Balanced: ~75% of logical cores (preserves some capacity for OS/UI)
+    // - Performance: 100% of logical cores (may impact UI responsiveness)
     // - If low memory (<4GB), reduce threads to avoid memory pressure
-    let balanced = Math.max(1, cores - 1);
+    let balanced = Math.max(1, Math.floor(cores * 0.75));
     if (totalMemGB < 4) balanced = Math.max(1, Math.floor(balanced / 2));
 
     return {
       recommended: {
         mode: 'balanced',
         threads: balanced,
-        note: 'Reserves 1 core for OS/UI; reduces threads on low memory'
+        note: 'Uses ~75% of logical cores; reduces threads on low memory'
       },
       performance: {
         mode: 'performance',
