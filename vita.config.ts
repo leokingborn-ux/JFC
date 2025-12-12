@@ -35,7 +35,11 @@ export default defineConfig({
                     fs.mkdirSync(path.dirname(dest), { recursive: true });
                 }
                 fs.copyFileSync(src, dest);
-                console.log('[Build] Copied miner-kernel.js');
+                console.log('[Build] ✓ Copied miner-kernel.js to dist-electron/');
+                console.log('[Build] File size:', fs.statSync(dest).size, 'bytes');
+              } else {
+                console.error('[Build] ✗ ERROR: Source miner-kernel.js not found at', src);
+                process.exit(1);
               }
             }
           }]
