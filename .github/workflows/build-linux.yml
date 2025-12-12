@@ -27,7 +27,7 @@ jobs:
             libgtk-3-dev libnss3 libasound2 squashfs-tools cpio
 
       - name: Install npm dependencies
-        run: npm ci --no-optional
+        run: npm install --prefer-offline --no-audit
 
       - name: Build Linux packages (AppImage + deb)
         run: npm run build:linux
