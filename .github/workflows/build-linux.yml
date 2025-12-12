@@ -29,6 +29,9 @@ jobs:
       - name: Install npm dependencies
         run: npm install --prefer-offline --no-audit
 
+      - name: Remove optional better-sqlite3 (C++20 incompatibility with electron-builder)
+        run: npm uninstall better-sqlite3 --save-optional
+
       - name: Build Linux packages (AppImage + deb)
         run: npm run build:linux
         env:
