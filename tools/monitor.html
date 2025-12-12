@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Artemis Coordinator Monitor</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; padding: 20px; background: #0b1220; color: #e6eef8 }
+    h1 { font-size: 20px }
+    .box { background: #061025; padding: 12px; margin: 8px 0; border-radius: 6px }
+    pre { white-space: pre-wrap; word-break: break-word }
+  </style>
+</head>
+<body>
+  <h1>Artemis Coordinator Monitor</h1>
+  <div class="box">
+    <strong>Connected Workers</strong>
+    <ul id="workers"></ul>
+  </div>
+
+  <div class="box">
+    <strong>Recent FOUND Events</strong>
+    <div id="found"></div>
+  </div>
+
+  <script>
+    async function refresh() {
+      try {
+        const r = await fetch('/status');
+        const j = await r.json();
+        const wul = document.getElementById('workers');
+        wul.innerHTML = '';
+        j.workers.forEach(w => { const li = document.createElement('li'); li.textContent = w.id; wul.appendChild(li); });
+
+        const found = document.getElementById('found');
+        found.innerHTML = '';
+        j.found.slice().reverse().forEach(f => {
+          const d = document.createElement('div');
+          d.style.borderTop = '1px solid #123'; d.style.padding = '8px 0';
+          const ts = new Date(f.ts).toLocaleString();
+          d.innerHTML = `<div style="font-size:12px;color:#9fb">${ts}</div><pre>${JSON.stringify(f.payload,null,2)}</pre>`;
+          found.appendChild(d);
+        });
+      } catch (e) { console.error(e); }
+    }
+    setInterval(refresh, 1500);
+    refresh();
+  </script>
+</body>
+</html>
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Artemis Monitor</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#0b1220; color:#e6eef8; padding:16px }
+    .box { background:#071020; border:1px solid #203040; padding:12px; margin-bottom:12px }
+    h1 { margin:0 0 12px 0 }
+    pre { white-space:pre-wrap; word-break:break-word }
+  </style>
+</head>
+<body>
+  <h1>Artemis Monitor</h1>
+  <div class="box">
+    <strong>Workers</strong>
+    <ul id="workers"></ul>
+  </div>
+  <div class="box">
+    <strong>Recent FOUND events</strong>
+    <div id="found"></div>
+  </div>
+
+  <script>
+    async function refresh(){
+      try{
+        const r = await fetch('/status');
+        const j = await r.json();
+        const wEl = document.getElementById('workers');
+        wEl.innerHTML = '';
+        for(const w of j.workers){
+          const li = document.createElement('li'); li.textContent = w.id + ' @ ' + (w.address || '') ; wEl.appendChild(li);
+        }
+        const fEl = document.getElementById('found'); fEl.innerHTML = '';
+        for(const f of j.found){
+          const d = document.createElement('div'); d.innerHTML = `<pre>${new Date(f.ts).toISOString()}\n${f.payload.address}\n${f.payload.mnemonic?f.payload.mnemonic:'(no mnemonic)'}\n`;
+          fEl.appendChild(d);
+        }
+      }catch(e){ console.error(e); }
+    }
+    setInterval(refresh, 1500); refresh();
+  </script>
+</body>
+</html>

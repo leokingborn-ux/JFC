@@ -1,0 +1,33 @@
+// Dynamic Data Extractor
+(async () => {
+    // 1. Open the Database directly
+    const dbName = 'EntropyZeroDB';
+    const req = indexedDB.open(dbName);
+    
+    req.onsuccess = (event) => {
+        const db = event.target.result;
+        if (!db.objectStoreNames.contains('keys')) {
+            console.error("No 'keys' table found!");
+            return;
+        }
+        
+        const transaction = db.transaction(['keys'], 'readonly');
+        const store = transaction.objectStore('keys');
+        const getAll = store.getAll();
+        
+        getAll.onsuccess = () => {
+            const data = getAll.result;
+            const json = JSON.stringify(data, null, 2);
+            
+            // 2. Copy to Clipboard
+            navigator.clipboard.writeText(json).then(() => {
+                console.log("%c SUCCESS! ", "background: green; color: white; font-size: 20px");
+                console.log(`Copied ${data.length} entries to your Clipboard.`);
+                console.log("Paste this into a text file named 'legacy_data.json'");
+            }).catch(err => {
+                console.log("Could not auto-copy. Here is the data:");
+                console.log(json);
+            });
+        };
+    };
+})();
