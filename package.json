@@ -10,7 +10,7 @@
     "dev": "vite",
     "build": "tsc -p tsconfig.electron.json && vite build && npm run verify:kernel && electron-builder",
     "build:linux": "cross-env TARGET=linux tsc -p tsconfig.electron.json && vite build && npm run verify:kernel && electron-builder --linux deb",
-    "verify:kernel": "node -e \"const fs = require('fs'); const path = require('path'); const file = path.join(__dirname, 'dist-electron/miner-kernel.js'); if (!fs.existsSync(file)) { console.error('ERROR: miner-kernel.js not found at', file); process.exit(1); } console.log('✓ miner-kernel.js verified:', fs.statSync(file).size, 'bytes');\n\"",
+    "verify:kernel": "node scripts/verify-kernel.js",
     "start:coordinator": "node ./tools/coordinator.js",
     "start:worker": "node ./tools/remote-worker.js",
     "build:unique": "node scripts/build-unique.js"
