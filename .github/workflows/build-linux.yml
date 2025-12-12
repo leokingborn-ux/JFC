@@ -27,7 +27,9 @@ jobs:
             libgtk-3-dev libnss3 libasound2 squashfs-tools cpio
 
       - name: Install npm dependencies
-        run: npm install --prefer-offline --no-audit
+        run: |
+          npm install --prefer-offline --no-audit || npm install --prefer-offline --no-audit
+        timeout-minutes: 10
 
       - name: Remove optional better-sqlite3 (C++20 incompatibility with electron-builder)
         run: npm uninstall better-sqlite3 --save-optional
